@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NIHSS Assessment Summary (Baseline)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: left; vertical-align: top; }
+    th { background-color: #eee; }
+    .score-col { width: 80px; text-align: center; }
+    .title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+    .info-table td { border: none; }
+  </style>
+</head>
+<body>
+  <div class="title">NIHSS Assessment Summary (Baseline)</div>
+  <table class="info-table">
+    <tr>
+      <td>Name: ____________________</td>
+      <td>Sex/Age: ____________________</td>
+    </tr>
+    <tr>
+      <td>ID No.: ____________________</td>
+      <td>Ward/Bed: ____________________</td>
+    </tr>
+    <tr>
+      <td>AE/HN: ____________________</td>
+      <td>Dept: ____________________</td>
+    </tr>
+  </table>
+  <br/>
+  <table>
+    <tr>
+      <th style="width: 240px;">Description</th>
+      <th>Score Definitions</th>
+      <th class="score-col">Baseline</th>
+    </tr>
+    <!-- Score rows will be injected here -->
+  </table>
+  <br/>
+  <table>
+    <tr>
+      <th style="text-align: right;">Total NIHSS Score</th>
+      <td id="totalScore" class="score-col">0</td>
+    </tr>
+  </table>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const scoreMap = {
+      "1a": "Level of Consciousness (LOC)|0 = Alert<br>1 = Drowsy<br>2 = Stuporous<br>3 = Coma",
+      "1b": "LOC Questions (month, age)|0 = Both correct<br>1 = One correct<br>2 = None correct",
+      "1c": "LOC Commands (open/close eyes, open/close fist)|0 = Obeys both<br>1 = Obeys 1<br>2 = Obeys none",
+      "2": "Best gaze|0 = Normal<br>1 = Partial gaze palsy<br>2 = Forced deviation",
+      "3": "Visual|0 = Normal<br>1 = Partial hemianopia<br>2 = Complete hemianopia<br>3 = Bilateral hemianopia",
+      "4": "Facial palsy|0 = Normal<br>1 = Minor<br>2 = Partial<br>3 = Complete",
+      "5a": "Motor Arm - L|0 = No drift<br>1 = Drift, not hit bed<br>2 = Hits bed<br>3 = No effort<br>4 = No movement",
+      "5b": "Motor Arm - R|0 = No drift<br>1 = Drift, not hit bed<br>2 = Hits bed<br>3 = No effort<br>4 = No movement",
+      "6a": "Motor Leg - L|0 = No drift<br>1 = Drift, not hit bed<br>2 = Hits bed<br>3 = No effort<br>4 = No movement",
+      "6b": "Motor Leg - R|0 = No drift<br>1 = Drift, not hit bed<br>2 = Hits bed<br>3 = No effort<br>4 = No movement",
+      "7": "Limb ataxia|0 = Absent<br>1 = Present 1 limb<br>2 = Present 2 limbs",
+      "8": "Sensory|0 = Normal<br>1 = Mild loss<br>2 = Severe loss",
+      "9": "Best language|0 = No aphasia<br>1 = Mild<br>2 = Severe<br>3 = Mute",
+      "10": "Dysarthria|0 = Normal<br>1 = Mild<br>2 = Severe",
+      "11": "Extinction/inattention|0 = None<br>1 = Visual/sensory<br>2 = Profound both"
+    };
+
+    let total = 0;
+    const tbody = document.querySelectorAll("table")[1];
+    for (const key in scoreMap) {
+      const label = scoreMap[key].split("|")[0];
+      const defs = scoreMap[key].split("|")[1];
+      const val = params.get("q" + key);
+      let scoreDisplay = val !== null ? val : "-";
+      if (val !== null && !isNaN(val)) total += parseInt(val);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${label}</td><td>${defs}</td><td class="score-col">${scoreDisplay}</td>`;
+      tbody.appendChild(tr);
+    }
+    document.getElementById("totalScore").innerText = total;
+  </script>
+</body>
+</html>
